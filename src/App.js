@@ -1,58 +1,37 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
-import logo2 from "./logo2.svg";
 import "./App.css";
 
+import GenerateCharacter from './GenerateCharacter';
+import DisplayCharacter from './DisplayCharacter';
 
-
-import Quotes from "./Quotes";
-
-
-
-
-class App extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {on: false};
-  }
-  handleClick = () => {
-    this.setState({ on: !this.state.on });
+const sampleCharacter = {
+  quote: "Oh Yeah!",
+  character: "Duffman",
+  image: "https://cdn.glitch.com/3c3ffadc-3406-4440-bb95-d40ec8fcde72%2FDuffman.png?1497567511709"
   };
 
 
-
-
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {character: sampleCharacter}
+    };
+    getCharacter() {
+        fetch("https://thesimpsonsquoteapi.glitch.me/quotes")
+        .then(response  =>  response.json())
+        .then(data  => {
+          this.setState({
+            character: data[0],
+          });
+      });
+    }   
+  
   render() {
-    const logoWork = this.state.on ? 'Work' : 'NoWork';
-    const buttonWork = this.state.on ? 'Homer is working' : 'Dho! Homer is not working!';
-    const selectedLogo = this.state.on ? logo : logo2;
     return (
-
-      <div className="App">
-        <header className="App-header">
-
-
-          <img src={selectedLogo} className={logoWork} alt="logo" />
-
-          <h1 className="App-title">Simpsons Quotes</h1>
-          <div>
-            <button className="btn btn-info p-3 mt-4 shadow mb-5 rounded"
-              // className={logo}
-              onClick={this.handleClick}
-            >
-              {buttonWork}</button>
-
-          </div>
-
-
-
-        </header>
-
-        <Quotes />
+      <div>
+       <GenerateCharacter selectCharacter={() =>  this.getCharacter()}  />
+       <DisplayCharacter character={this.state.character}  /> 
       </div>
-
-
     );
   }
 }
